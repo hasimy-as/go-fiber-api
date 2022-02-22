@@ -43,8 +43,8 @@ func CreateUser(c *fiber.Ctx) error {
 	result, err := userCollection.InsertOne(ctx, newUser)
 
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(res.Response{Success: false, Data: err.Error(), Message: "error", Code: http.StatusBadRequest})
+		return c.Status(http.StatusInternalServerError).JSON(res.Response{Success: false, Data: err.Error(), Message: "error", Code: http.StatusInternalServerError})
 	}
 
-	return c.Status(http.StatusCreated).JSON(res.Response{Success: true, Data: result, Message: "User successfully inserted!", Code: http.StatusOK})
+	return c.Status(http.StatusOK).JSON(res.Response{Success: true, Data: result, Message: "User successfully inserted!", Code: http.StatusOK})
 }

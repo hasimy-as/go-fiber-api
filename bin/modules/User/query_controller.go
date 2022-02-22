@@ -34,6 +34,6 @@ func GetUsers(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusOK).JSON(
-		res.Response{Success: true, Message: "success", Data: users},
+		res.Response{Success: true, Message: "Users successfully fetched.", Data: users, Code: http.StatusOK},
 	)
 }
