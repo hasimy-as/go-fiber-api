@@ -16,7 +16,11 @@ func main() {
 	db.ConnectDB()
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		return c.JSON(res.Response{Success: true, Data: "OK", Message: "Server is working properly", Code: http.StatusOK})
+		return c.JSON(res.Response("OK", "Server is working properly."))
+	})
+
+	app.Get("*", func(c *fiber.Ctx) error {
+		return c.JSON(res.ResponseError("Cannot get undefined!", http.StatusNotFound))
 	})
 
 	app.Listen(config.GlobalEnv.PORT)

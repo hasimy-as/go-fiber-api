@@ -25,11 +25,11 @@ func CreateUser(c *fiber.Ctx) error {
 	defer cancel()
 
 	if err := c.BodyParser(&user); err != nil {
-		return c.Status(http.StatusBadRequest).JSON(res.Response{Success: false, Data: err.Error(), Message: "error", Code: http.StatusBadRequest})
+		return c.Status(http.StatusBadRequest).JSON(res.ResponseError(err.Error(), http.StatusBadRequest))
 	}
 
 	if validationErr := validate.Struct(&user); validationErr != nil {
-		return c.Status(http.StatusBadRequest).JSON(res.Response{Success: false, Data: validationErr.Error(), Message: "error", Code: http.StatusBadRequest})
+		return c.Status(http.StatusBadRequest).JSON(res.ResponseError(validationErr.Error(), http.StatusBadRequest))
 	}
 
 	newUser := models.User{
@@ -43,8 +43,8 @@ func CreateUser(c *fiber.Ctx) error {
 	result, err := userCollection.InsertOne(ctx, newUser)
 
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(res.Response{Success: false, Data: err.Error(), Message: "error", Code: http.StatusInternalServerError})
+		return c.Status(http.StatusInternalServerError).JSON(res.ResponseError(err.Error(), http.StatusInternalServerError))
 	}
 
-	return c.Status(http.StatusOK).JSON(res.Response{Success: true, Data: result, Message: "User successfully inserted!", Code: http.StatusOK})
+	return c.Status(http.StatusOK).JSON(res.Response(result, "User successfully inserted!"))
 }

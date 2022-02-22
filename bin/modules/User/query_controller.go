@@ -20,20 +20,18 @@ func GetUsers(c *fiber.Ctx) error {
 	results, err := userCollection.Find(ctx, bson.M{})
 
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(res.Response{Success: false, Data: err.Error(), Message: "error", Code: http.StatusInternalServerError})
+		return c.Status(http.StatusInternalServerError).JSON(res.ResponseError(err.Error(), http.StatusInternalServerError))
 	}
 
 	defer results.Close(ctx)
 	for results.Next(ctx) {
 		var singleUser models.User
 		if err = results.Decode(&singleUser); err != nil {
-			return c.Status(http.StatusInternalServerError).JSON(res.Response{Success: false, Data: err.Error(), Message: "error", Code: http.StatusInternalServerError})
+			return c.Status(http.StatusInternalServerError).JSON(res.ResponseError(err.Error(), http.StatusInternalServerError))
 		}
 
 		users = append(users, singleUser)
 	}
 
-	return c.Status(http.StatusOK).JSON(
-		res.Response{Success: true, Message: "Users successfully fetched.", Data: users, Code: http.StatusOK},
-	)
+	return c.Status(http.StatusOK).JSON(res.Response(users, "Users successfully fetched."))
 }
